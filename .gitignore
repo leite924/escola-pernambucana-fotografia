@@ -1,0 +1,85 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# WinRAR files (exclude from repository)
+*.exe
+*.dll
+*.SFX
+*.chm
+*.lng
+*.htm
+*.msix
+*.manifest
+*.pri
+*.lst
+7zxa.dll
+Default.SFX
+Default32.SFX
+Descript.ion
+License.txt
+Order.htm
+Rar.exe
+Rar.txt
+RarExt.dll
+RarExt32.dll
+RarExtInstaller.exe
+RarExtInstaller.exe.manifest
+RarExtLogo.altform-unplated_targetsize-32.png
+RarExtLogo.altform-unplated_targetsize-48.png
+RarExtLogo.altform-unplated_targetsize-64.png
+RarExtPackage.msix
+RarFiles.lst
+ReadMe.txt
+Resources.pri
+UnRAR.exe
+Uninstall.exe
+Uninstall.lst
+UnrarSrc.txt
+WhatsNew.txt
+WinCon.SFX
+WinCon32.SFX
+WinRAR.chm
+WinRAR.exe
+Zip.SFX
+Zip32.SFX
+curso de fotografia.rar
+rar.lng
+rarext.lng
+sfx.lng
+uninstall.lng
+winrar.lng
+
+# Backup folder
+src_backup/
+
+# Vercel
+.vercel
