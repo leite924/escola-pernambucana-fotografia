@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { Clock, Users, Star, CheckCircle, Play, Download, Award, ArrowLeft } from 'lucide-react'
+import { Clock, Users, Star, CheckCircle, Play, Download, Award, ArrowLeft, ShoppingCart } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
 import { useStore } from '../store/useStore'
 import CheckoutAsaas from '../components/CheckoutAsaas'
+import ClassSelector from '../components/ClassSelector'
 
 const enrollmentSchema = z.object({
   name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
@@ -52,7 +53,16 @@ const CourseDetail = () => {
     notes: ''
   })
 
-  const { courses, selectedCourse, setSelectedCourse, addStudent, classSchedules } = useStore()
+  const { courses, selectedCourse, setSelectedCourse, addStudent, classSchedules, addToCart } = useStore()
+
+  const handleAddToCart = (classSchedule: any, course: any) => {
+    addToCart(classSchedule, course)
+    toast.success(`Turma ${classSchedule.shift} de ${course.title} adicionada ao carrinho!`)
+  }
+
+  const getClassesForCourse = (courseId: number) => {
+    return classSchedules.filter(cls => cls.courseId === courseId && cls.status === 'active')
+  }
   
   // Get course data from store or find by ID
   const course = selectedCourse || courses.find(c => c.id === parseInt(id || '0'))
@@ -414,12 +424,14 @@ const CourseDetail = () => {
                 </div>
               </div>
 
-              <button
-                onClick={() => setShowCheckout(true)}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors mb-4"
-              >
-                Inscrever-se Agora
-              </button>
+              {/* Seleção de Turma */}
+              <div className="mb-6">
+                <h4 className="font-semibold text-gray-900 mb-3">Escolha sua turma:</h4>
+                <ClassSelector 
+                  course={course} 
+                  onAddToCart={handleAddToCart}
+                />
+              </div>
 
               <div className="space-y-3 text-sm">
                 <div className="flex items-center justify-between">

@@ -77,6 +77,25 @@ interface AffiliateUser {
   registrationDate: string
 }
 
+interface CartItem {
+  id: string
+  classSchedule: ClassSchedule
+  course: Course
+  quantity: number
+  addedAt: string
+}
+
+interface OrderBump {
+  id: string
+  title: string
+  description: string
+  originalPrice: number
+  discountPrice: number
+  image: string
+  features: string[]
+  courseIds: number[] // Cursos que este order bump se aplica
+}
+
 interface AppState {
   // Authentication
   user: User | null
@@ -90,6 +109,23 @@ interface AppState {
   // Affiliate Authentication
   affiliateUser: AffiliateUser | null
   setAffiliateUser: (user: AffiliateUser | null) => void
+  
+  // Cart functions
+  cartItems: CartItem[]
+  addToCart: (classSchedule: ClassSchedule, course: Course) => void
+  removeFromCart: (classScheduleId: string) => void
+  updateCartQuantity: (classScheduleId: string, quantity: number) => void
+  clearCart: () => void
+  getCartTotal: () => number
+  getCartItemsCount: () => number
+  
+  // Order Bumps
+  orderBumps: OrderBump[]
+  selectedOrderBumps: string[]
+  addOrderBump: (orderBumpId: string) => void
+  removeOrderBump: (orderBumpId: string) => void
+  getOrderBumpsForCart: () => OrderBump[]
+  getOrderBumpsTotal: () => number
   
   // Courses
   courses: Course[]
@@ -227,6 +263,87 @@ const mockCourses: Course[] = [
   }
 ]
 
+const mockClassSchedules: ClassSchedule[] = [
+  {
+    id: 'class-1-morning',
+    courseId: 1,
+    courseName: 'Fotografia Digital Completa',
+    shift: 'manhã',
+    startDate: '2024-03-01',
+    endDate: '2024-04-26',
+    schedule: 'Segunda e Quarta 9h às 12h',
+    maxStudents: 15,
+    enrolledStudents: 8,
+    instructor: 'Carlos Silva',
+    status: 'active'
+  },
+  {
+    id: 'class-1-evening',
+    courseId: 1,
+    courseName: 'Fotografia Digital Completa',
+    shift: 'noite',
+    startDate: '2024-03-01',
+    endDate: '2024-04-26',
+    schedule: 'Terça e Quinta 19h às 22h',
+    maxStudents: 15,
+    enrolledStudents: 12,
+    instructor: 'Carlos Silva',
+    status: 'active'
+  },
+  {
+    id: 'class-2-afternoon',
+    courseId: 2,
+    courseName: 'Fotografia de Retrato Profissional',
+    shift: 'tarde',
+    startDate: '2024-03-15',
+    endDate: '2024-05-24',
+    schedule: 'Sábado 14h às 18h',
+    maxStudents: 12,
+    enrolledStudents: 7,
+    instructor: 'Ana Costa',
+    status: 'active'
+  },
+  {
+    id: 'class-2-evening',
+    courseId: 2,
+    courseName: 'Fotografia de Retrato Profissional',
+    shift: 'noite',
+    startDate: '2024-03-15',
+    endDate: '2024-05-24',
+    schedule: 'Segunda e Quarta 19h às 22h',
+    maxStudents: 12,
+    enrolledStudents: 9,
+    instructor: 'Ana Costa',
+    status: 'active'
+  },
+  {
+    id: 'class-3-saturday',
+    courseId: 3,
+    courseName: 'Fotografia de Casamento',
+    shift: 'sábado',
+    startDate: '2024-04-01',
+    endDate: '2024-06-22',
+    schedule: 'Sábado 8h às 17h',
+    maxStudents: 10,
+    enrolledStudents: 6,
+    instructor: 'Roberto Lima',
+    status: 'active'
+  },
+  {
+    id: 'class-3-morning',
+    courseId: 3,
+    courseName: 'Fotografia de Casamento',
+    shift: 'manhã',
+    startDate: '2024-04-01',
+    endDate: '2024-06-22',
+    schedule: 'Terça e Quinta 9h às 12h',
+    maxStudents: 10,
+    enrolledStudents: 4,
+    instructor: 'Roberto Lima',
+    status: 'active'
+  }
+]
+
 const mockStudents: Student[] = [
   {
     id: 1,
@@ -257,6 +374,54 @@ const mockStudents: Student[] = [
   }
 ]
 
+const mockOrderBumps: OrderBump[] = [
+  {
+    id: 'ob1',
+    title: 'Kit Lightroom + Presets Profissionais',
+    description: 'Pacote completo com 50+ presets profissionais para Lightroom e curso de edição avançada',
+    originalPrice: 297,
+    discountPrice: 97,
+    image: 'https://trae-api-us.mchost.guru/api/ide/v1/text_to_image?prompt=lightroom%20presets%20collection%20professional%20photography%20editing&image_size=landscape_16_9',
+    features: [
+      '50+ Presets Profissionais',
+      'Curso de Edição no Lightroom',
+      'Suporte por 30 dias',
+      'Atualizações gratuitas'
+    ],
+    courseIds: [1, 2, 3]
+  },
+  {
+    id: 'ob2',
+    title: 'Mentoria Individual 1:1',
+    description: 'Sessão de mentoria individual de 2 horas com instrutor especialista',
+    originalPrice: 497,
+    discountPrice: 197,
+    image: 'https://trae-api-us.mchost.guru/api/ide/v1/text_to_image?prompt=one%20on%20one%20photography%20mentoring%20session%20professional%20instructor&image_size=landscape_16_9',
+    features: [
+      '2 horas de mentoria individual',
+      'Análise do seu portfólio',
+      'Plano de carreira personalizado',
+      'Gravação da sessão'
+    ],
+    courseIds: [2, 3]
+  },
+  {
+    id: 'ob3',
+    title: 'Equipamentos Essenciais - Guia Completo',
+    description: 'E-book completo sobre equipamentos fotográficos com desconto em lojas parceiras',
+    originalPrice: 97,
+    discountPrice: 27,
+    image: 'https://trae-api-us.mchost.guru/api/ide/v1/text_to_image?prompt=photography%20equipment%20guide%20cameras%20lenses%20accessories&image_size=landscape_16_9',
+    features: [
+      'E-book com 100+ páginas',
+      'Guia de compras atualizado',
+      'Cupons de desconto',
+      'Lista de fornecedores'
+    ],
+    courseIds: [1]
+  }
+]
+
 export const useStore = create<AppState>((set, get) => ({
   // Authentication
   user: null,
@@ -266,6 +431,98 @@ export const useStore = create<AppState>((set, get) => ({
   // Affiliate Authentication
   affiliateUser: null,
   setAffiliateUser: (user) => set({ affiliateUser: user }),
+  
+  // Shopping Cart
+  cartItems: [],
+  
+  addToCart: (classSchedule, course) => {
+    const { cartItems } = get()
+    const existingItem = cartItems.find(item => item.classSchedule.id === classSchedule.id)
+    
+    if (existingItem) {
+      set({
+        cartItems: cartItems.map(item =>
+          item.classSchedule.id === classSchedule.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        )
+      })
+    } else {
+      const newItem: CartItem = {
+        id: `cart-${Date.now()}-${classSchedule.id}`,
+        classSchedule,
+        course,
+        quantity: 1,
+        addedAt: new Date().toISOString()
+      }
+      set({ cartItems: [...cartItems, newItem] })
+    }
+  },
+  
+  removeFromCart: (classScheduleId) => {
+    const { cartItems } = get()
+    set({ cartItems: cartItems.filter(item => item.classSchedule.id !== classScheduleId) })
+  },
+  
+  updateCartQuantity: (classScheduleId, quantity) => {
+    const { cartItems } = get()
+    if (quantity <= 0) {
+      set({ cartItems: cartItems.filter(item => item.classSchedule.id !== classScheduleId) })
+    } else {
+      set({
+        cartItems: cartItems.map(item =>
+          item.classSchedule.id === classScheduleId
+            ? { ...item, quantity }
+            : item
+        )
+      })
+    }
+  },
+  
+  clearCart: () => set({ cartItems: [] }),
+  
+  getCartTotal: () => {
+    const { cartItems } = get()
+    return cartItems.reduce((total, item) => total + (item.course.price * item.quantity), 0)
+  },
+  
+  getCartItemsCount: () => {
+    const { cartItems } = get()
+    return cartItems.reduce((count, item) => count + item.quantity, 0)
+  },
+  
+  // Order Bumps
+  orderBumps: mockOrderBumps,
+  selectedOrderBumps: [],
+  
+  addOrderBump: (orderBumpId) => {
+    const { selectedOrderBumps } = get()
+    if (!selectedOrderBumps.includes(orderBumpId)) {
+      set({ selectedOrderBumps: [...selectedOrderBumps, orderBumpId] })
+    }
+  },
+  
+  removeOrderBump: (orderBumpId) => {
+    const { selectedOrderBumps } = get()
+    set({ selectedOrderBumps: selectedOrderBumps.filter(id => id !== orderBumpId) })
+  },
+  
+  getOrderBumpsForCart: () => {
+    const { cartItems, orderBumps } = get()
+    const cartCourseIds = cartItems.map(item => item.courseId)
+    
+    return orderBumps.filter(bump => 
+      bump.courseIds.some(courseId => cartCourseIds.includes(courseId))
+    )
+  },
+  
+  getOrderBumpsTotal: () => {
+    const { selectedOrderBumps, orderBumps } = get()
+    return selectedOrderBumps.reduce((total, bumpId) => {
+      const bump = orderBumps.find(b => b.id === bumpId)
+      return total + (bump ? bump.discountPrice : 0)
+    }, 0)
+  },
   
   login: async (email: string, password: string) => {
     // Simulate API call
@@ -346,7 +603,7 @@ export const useStore = create<AppState>((set, get) => ({
   selectedCourse: null,
   
   // Class Schedules
-  classSchedules: [],
+  classSchedules: mockClassSchedules,
   
   setCourses: (courses) => set({ courses }),
   setSelectedCourse: (course) => set({ selectedCourse: course }),

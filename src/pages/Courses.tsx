@@ -1,14 +1,25 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { Filter, Search, Clock, Users, Star, ArrowRight } from 'lucide-react'
+import { Search, Filter, Star, Clock, Users, BookOpen, ShoppingCart, ArrowRight } from 'lucide-react'
 import { useStore } from '../store/useStore'
+import { toast } from 'sonner'
+import ClassSelector from '../components/ClassSelector'
 
 const Courses = () => {
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedLevel, setSelectedLevel] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
   
-  const { courses, setSelectedCourse } = useStore()
+  const { courses, classSchedules, setSelectedCourse, addToCart } = useStore()
+
+  const handleAddToCart = (classSchedule: any, course: any) => {
+    addToCart(classSchedule, course)
+    toast.success(`Turma ${classSchedule.shift} de ${course.title} adicionada ao carrinho!`)
+  }
+
+  const getClassesForCourse = (courseId: number) => {
+    return classSchedules.filter(cls => cls.courseId === courseId && cls.status === 'active')
+  }
 
   const handleCourseClick = (course: any) => {
     setSelectedCourse(course)
@@ -193,14 +204,25 @@ const Courses = () => {
                   </p>
                 </div>
                 
-                <Link
-                  to={`/curso/${course.id}`}
-                  onClick={() => handleCourseClick(course)}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors inline-flex items-center justify-center"
-                >
-                  Ver Detalhes
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
+                {/* Seleção de Turma */}
+                <div className="mb-4">
+                  <h4 className="font-medium text-gray-900 mb-3">Escolha sua turma:</h4>
+                  <ClassSelector 
+                    course={course} 
+                    onAddToCart={handleAddToCart}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Link
+                    to={`/curso/${course.id}`}
+                    onClick={() => handleCourseClick(course)}
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors inline-flex items-center justify-center"
+                  >
+                    Ver Detalhes
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </div>
               </div>
             </div>
           ))}

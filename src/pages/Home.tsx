@@ -1,8 +1,12 @@
 import { Link } from 'react-router-dom'
 import { Camera, Users, Award, BookOpen, Star, Play, CheckCircle, ArrowRight, Zap, Target, Trophy } from 'lucide-react'
 import AffiliateBanner from '../components/AffiliateBanner'
+import ClassSelector from '../components/ClassSelector'
+import { useStore } from '../store/useStore'
 
 const Home = () => {
+  const { courses, addToCart } = useStore()
+  
   const featuredCourses = [
     {
       id: 1,
@@ -238,6 +242,56 @@ const Home = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Quick Course Selection */}
+      <section className="py-16 bg-gradient-to-br from-gray-50 to-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 bg-blue-100 px-4 py-2 rounded-full text-sm font-medium text-blue-800 mb-4">
+              <Zap className="w-4 h-4 text-blue-600" />
+              Matrícula Simplificada
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Escolha Seu Curso e Turma
+            </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Selecione facilmente o curso desejado, escolha o mês e turno que melhor se adequa à sua rotina
+            </p>
+          </div>
+          
+          <div className="relative">
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-gradient-to-r from-white to-transparent w-12 h-full"></div>
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-gradient-to-l from-white to-transparent w-12 h-full"></div>
+            
+            <div className="overflow-x-auto pb-4 px-2 -mx-2 scrollbar-hide">
+              <div className="flex space-x-6 pb-4" style={{minWidth: 'max-content'}}>
+                {courses.map((course) => (
+                  <div key={course.id} className="flex-shrink-0 w-80">
+                    <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 border border-gray-100">
+                      <div className="flex items-center space-x-4 mb-4">
+                        <img
+                          src={course.image}
+                          alt={course.title}
+                          className="w-16 h-16 object-cover rounded-lg shadow-sm"
+                        />
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-900">{course.title}</h3>
+                          <p className="text-sm text-gray-600">{course.level} • {course.duration}</p>
+                          <p className="text-lg font-bold text-blue-600">R$ {course.price.toFixed(2).replace('.', ',')}</p>
+                        </div>
+                      </div>
+                      <ClassSelector 
+                        course={course} 
+                        onAddToCart={(classSchedule) => addToCart(classSchedule, course)}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>

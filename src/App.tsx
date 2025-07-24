@@ -20,6 +20,7 @@ import AffiliateRegister from './pages/AffiliateRegister'
 import AffiliateLogin from './pages/AffiliateLogin'
 import AffiliateDashboard from './pages/AffiliateDashboard'
 import StudentGallery from './components/StudentGallery'
+import EcommerceCheckout from './components/EcommerceCheckout'
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
             <Route path="/affiliate-register" element={<AffiliateRegister />} />
             <Route path="/affiliate-login" element={<AffiliateLogin />} />
             <Route path="/affiliate-dashboard" element={<AffiliateDashboard />} />
+            <Route path="/checkout" element={<EcommerceCheckout />} />
           </Routes>
         </main>
         <Footer />
