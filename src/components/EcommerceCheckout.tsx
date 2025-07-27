@@ -174,12 +174,17 @@ const EcommerceCheckout = ({ onSuccess, onCancel }: EcommerceCheckoutProps) => {
       // 5. Emitir NFSe se aceito
       if (data.acceptNFSe) {
         try {
-          await nfseService.issueNFSe({
-            customerId: customer.id,
-            paymentId: payment.id,
-            amount: finalTotal,
-            description
-          })
+          await nfseService.gerarNFSeCurso(
+            {
+              nome: data.name,
+              cpf: data.cpf,
+              email: data.email
+            },
+            {
+              titulo: description
+            },
+            finalTotal
+          )
         } catch (error) {
           console.error('Erro ao emitir NFSe:', error)
         }

@@ -19,17 +19,17 @@ const ShoppingCart = ({ isOpen, onClose, onCheckout }: ShoppingCartProps) => {
     getCartItemsCount
   } = useStore()
 
-  const handleQuantityChange = (courseId: number, newQuantity: number) => {
+  const handleQuantityChange = (classScheduleId: string, newQuantity: number) => {
     if (newQuantity < 1) {
-      removeFromCart(courseId)
+      removeFromCart(classScheduleId)
       toast.success('Curso removido do carrinho')
     } else {
-      updateCartQuantity(courseId, newQuantity)
+      updateCartQuantity(classScheduleId, newQuantity)
     }
   }
 
-  const handleRemoveItem = (courseId: number, courseName: string) => {
-    removeFromCart(courseId)
+  const handleRemoveItem = (classScheduleId: string, courseName: string) => {
+    removeFromCart(classScheduleId)
     toast.success(`${courseName} removido do carrinho`)
   }
 
@@ -109,7 +109,7 @@ const ShoppingCart = ({ isOpen, onClose, onCheckout }: ShoppingCartProps) => {
                             {formatPrice(item.course.price)}
                           </span>
                           <button
-                            onClick={() => handleRemoveItem(item.courseId, item.course.title)}
+                            onClick={() => handleRemoveItem(item.id, item.course.title)}
                             className="text-red-500 hover:text-red-700 p-1"
                           >
                             <Trash2 className="h-4 w-4" />
@@ -122,7 +122,7 @@ const ShoppingCart = ({ isOpen, onClose, onCheckout }: ShoppingCartProps) => {
                     <div className="flex items-center justify-between mt-4">
                       <div className="flex items-center space-x-2">
                         <button
-                          onClick={() => handleQuantityChange(item.courseId, item.quantity - 1)}
+                          onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
                           className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
                         >
                           <Minus className="h-4 w-4" />
@@ -131,7 +131,7 @@ const ShoppingCart = ({ isOpen, onClose, onCheckout }: ShoppingCartProps) => {
                           {item.quantity}
                         </span>
                         <button
-                          onClick={() => handleQuantityChange(item.courseId, item.quantity + 1)}
+                          onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
                           className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
                         >
                           <Plus className="h-4 w-4" />

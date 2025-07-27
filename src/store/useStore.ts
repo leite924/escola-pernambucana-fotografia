@@ -509,7 +509,7 @@ export const useStore = create<AppState>((set, get) => ({
   
   getOrderBumpsForCart: () => {
     const { cartItems, orderBumps } = get()
-    const cartCourseIds = cartItems.map(item => item.courseId)
+    const cartCourseIds = cartItems.map(item => item.course.id)
     
     return orderBumps.filter(bump => 
       bump.courseIds.some(courseId => cartCourseIds.includes(courseId))

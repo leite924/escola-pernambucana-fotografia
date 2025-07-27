@@ -47,7 +47,7 @@ function App() {
             <Route path="/affiliate-register" element={<AffiliateRegister />} />
             <Route path="/affiliate-login" element={<AffiliateLogin />} />
             <Route path="/affiliate-dashboard" element={<AffiliateDashboard />} />
-            <Route path="/checkout" element={<EcommerceCheckout />} />
+            <Route path="/checkout" element={<EcommerceCheckout onSuccess={() => {}} onCancel={() => {}} />} />
           </Routes>
         </main>
         <Footer />

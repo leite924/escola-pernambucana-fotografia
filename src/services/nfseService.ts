@@ -253,6 +253,11 @@ class NFSeService {
     return payload
   }
 
+  // Alias para emitirNFSe (compatibilidade)
+  async issueNFSe(nfseData: NFSeData): Promise<NFSeResponse> {
+    return this.emitirNFSe(nfseData)
+  }
+
   // Gerar NFSe para curso de fotografia
   async gerarNFSeCurso(dadosAluno: any, dadosCurso: any, valorPago: number) {
     const nfseData: NFSeData = {
